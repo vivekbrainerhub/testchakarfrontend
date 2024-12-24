@@ -14,7 +14,6 @@ import {
   Heading,
   Text,
   useColorModeValue,
-  Link,
   useToast,
 } from "@chakra-ui/react";
 import { useState } from "react";
@@ -23,6 +22,7 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { registerService } from "../../services/userServices";
+import { Link, useNavigate } from "react-router-dom";
 
 // Validation schema
 const schema = yup.object().shape({
@@ -47,7 +47,7 @@ export default function Register() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const toast = useToast();
-
+  const naviagte = useNavigate();
   const {
     register,
     handleSubmit,
@@ -61,17 +61,18 @@ export default function Register() {
     if (response?.status === "success") {
       toast({
         title: "Account created.",
-        description:response?.message,
-        position: 'top-right',
+        description: response?.message,
+        position: "top-right",
         status: "success",
         duration: 9000,
         isClosable: true,
       });
+      naviagte("/login");
     } else {
       toast({
         title: "Account not created.",
-        description:response?.data,
-        position: 'top-right',
+        description: response?.data,
+        position: "top-right",
         status: "error",
         duration: 9000,
         isClosable: true,
@@ -215,7 +216,10 @@ export default function Register() {
               </Stack>
               <Stack pt={6}>
                 <Text align={"center"}>
-                  Already a user? <Link color={"blue.400"}>Login</Link>
+                  Already a user?{" "}
+                  <Link color={"blue.400"} to="/login">
+                    Login
+                  </Link>
                 </Text>
               </Stack>
             </Stack>
