@@ -36,13 +36,18 @@ import { IconType } from "react-icons";
 import { useSelector } from "react-redux";
 import { store } from "../../redux/store";
 import { setReset } from "../../redux/slice/userSlice";
+import { useNavigate, Outlet, Link } from "react-router-dom";
+import Table from "../../component/TableComponent";
+import { allUserService } from "../../services/userServices";
+import { useEffect } from "react";
+import { categoriesService } from "../../services/productService";
 
 const LinkItems = [
-  { name: "Home", icon: FiHome },
-  { name: "Trending", icon: FiTrendingUp },
-  { name: "Explore", icon: FiCompass },
-  { name: "Favourites", icon: FiStar },
-  { name: "Settings", icon: FiSettings },
+  { name: "Home", icon: FiHome, to: "/dashboard/home" },
+  { name: "Product", icon: FiTrendingUp, to: "/dashboard/product" },
+  { name: "Explore", icon: FiCompass, to: "/dashboard/home" },
+  { name: "Favourites", icon: FiStar, to: "/dashboard/home" },
+  { name: "Settings", icon: FiSettings, to: "/dashboard/home" },
 ];
 
 const SidebarContent = ({ onClose, ...rest }) => {
@@ -64,9 +69,9 @@ const SidebarContent = ({ onClose, ...rest }) => {
         <CloseButton display={{ base: "flex", md: "none" }} onClick={onClose} />
       </Flex>
       {LinkItems.map((link) => (
-        <NavItem key={link.name} icon={link.icon}>
-          {link.name}
-        </NavItem>
+        <Link to={link.to} key={link.name}>
+          <NavItem icon={link.icon}>{link.name}</NavItem>
+        </Link>
       ))}
     </Box>
   );
@@ -110,6 +115,7 @@ const NavItem = ({ icon, children, ...rest }) => {
 };
 
 const MobileNav = ({ onOpen, currentUser, handelLogout, ...rest }) => {
+  const navigate = useNavigate();
   return (
     <Flex
       ml={{ base: 0, md: 60 }}
@@ -183,7 +189,9 @@ const MobileNav = ({ onOpen, currentUser, handelLogout, ...rest }) => {
               bg={useColorModeValue("white", "gray.900")}
               borderColor={useColorModeValue("gray.200", "gray.700")}
             >
-              <MenuItem>Profile</MenuItem>
+              <MenuItem onClick={() => navigate("/dashboard/profile")}>
+                Profile
+              </MenuItem>
               <MenuItem>Settings</MenuItem>
               <MenuItem>Billing</MenuItem>
               <MenuDivider />
@@ -207,8 +215,18 @@ const DashboardPage = () => {
   const currentUser = useSelector((store) => store.user.currentuser);
   const handelLogout = () => {
     store.dispatch(setReset());
-    console.log("call")
   };
+  const fetchAllUser = async () => {
+    const response = await allUserService();
+  };
+  const fetchCategories = async () => {
+    const response = await categoriesService();
+  };
+
+  useEffect(() => {
+    fetchAllUser();
+    fetchCategories();
+  }, []);
 
   return (
     <Box minH="100vh" bg={useColorModeValue("gray.100", "gray.900")}>
@@ -235,7 +253,7 @@ const DashboardPage = () => {
         handelLogout={handelLogout}
       />
       <Box ml={{ base: 0, md: 60 }} p="4">
-        {/* Content */}
+        <Outlet />
       </Box>
     </Box>
   );

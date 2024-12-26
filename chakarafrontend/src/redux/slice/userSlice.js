@@ -12,11 +12,14 @@ export const userSlice = createSlice({
   reducers: {
     setUser: (state, action) => {
       // Add logic to set user if needed
+      state.user=action.payload
     },
     setToken: (state, action) => {
-      console.log(action.payload, "action");
       state.token = action.payload.token;
       state.currentuser = action.payload.result;
+    },
+    setUpdate:(state,action)=>{
+      state.currentuser = action.payload;
     },
     setReset: (state) => {
       state.token = "";
@@ -27,6 +30,6 @@ export const userSlice = createSlice({
 });
 
 // Action creators are generated for each case reducer function
-export const { setUser, setToken, setReset } = userSlice.actions;
+export const { setUser, setToken,setUpdate, setReset } = userSlice.actions;
 
 export default userSlice.reducer;
