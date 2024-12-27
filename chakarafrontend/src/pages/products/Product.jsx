@@ -3,7 +3,7 @@ import { Button, Flex } from "@chakra-ui/react";
 // Import your components
 import AddCategory from "./AddCategories";
 import AddSubCategories from "./AddSubcategories";
-// import AddProduct from "./AddProduct";
+import AddProduct from "./AddProduct";
 
 const Product = () => {
   const [activeComponent, setActiveComponent] = useState("category");
@@ -44,7 +44,7 @@ const Product = () => {
       {/* Render different components based on the active component */}
       {activeComponent === "category" && <AddCategory />}
       {activeComponent === "subcategory" && <AddSubCategories />}
-      {/* {activeComponent === "product" && <AddProduct />} */}
+      {activeComponent === "product" && <AddProduct />}
     </>
   );
 };

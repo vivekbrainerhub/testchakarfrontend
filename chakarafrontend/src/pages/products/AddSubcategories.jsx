@@ -16,12 +16,9 @@ import {
 } from "@chakra-ui/react";
 import { useSelector } from "react-redux";
 import {
-  addCategoriesService,
   addSubCategoriesService,
-  categoriesService,
+  subCategoriesService,
 } from "../../services/productService";
-import { store } from "../../redux/store";
-import { setCategories } from "../../redux/slice/productSlice";
 const config = {
   showView: false,
   showEdit: false,
@@ -32,11 +29,12 @@ const config = {
 const schema = yup.object().shape({
   subCategoryName: yup.string().required("Category name is required"),
   description: yup.string().required("Description is required"),
-  categoryId: yup.string(),
+  category: yup.string(),
 });
 
 function AddSubCategories() {
   const categoryData = useSelector((store) => store.product.categories);
+  const allSubCategories = useSelector((store) => store.product.subCategory);
   console.log("categoryData", categoryData);
   const {
     register,
@@ -49,9 +47,11 @@ function AddSubCategories() {
 
   const onSubmit = async (data) => {
     const response = await addSubCategoriesService(data);
+    subCategoriesService();
+    reset();
   };
-  const filteredData = categoryData?.map((item) => ({
-    categoryName: item.categoryName,
+  const filteredData = allSubCategories?.map((item) => ({
+    subCategoryName: item.subCategoryName,
     description: item.description,
   }));
 
@@ -119,14 +119,14 @@ function AddSubCategories() {
             />
             <FormErrorMessage>{errors.description?.message}</FormErrorMessage>
           </FormControl>
-          <FormControl mt="6" isInvalid={!!errors.categoryId}>
+          <FormControl mt="6" isInvalid={!!errors.category}>
             <FormLabel htmlFor="category" fontWeight="bold" fontSize="lg">
               Category
             </FormLabel>
             <Select
               id="category"
               placeholder="Select a category"
-              {...register("categoryId", { required: "Category is required" })} // Register the field with validation
+              {...register("category", { required: "Category is required" })} // Register the field with validation
               size="lg"
             >
               {categoryData.map((category) => (
@@ -135,7 +135,7 @@ function AddSubCategories() {
                 </option>
               ))}
             </Select>
-            <FormErrorMessage>{errors.categoryId?.message}</FormErrorMessage>
+            <FormErrorMessage>{errors.category?.message}</FormErrorMessage>
           </FormControl>
 
           <Button

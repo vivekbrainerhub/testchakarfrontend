@@ -24,7 +24,7 @@ const TableComponent = ({
   handleView,
 }) => {
   const toast = useToast(); // For showing toast notifications
-  const columns = Object.keys(data[0]); // Extract column names (keys)
+  const columns = data.length > 0 ? Object.keys(data[0]) : []; // Extract column names (keys)
 
   // State for sorting
   const [sortConfig, setSortConfig] = useState({ key: "", direction: "asc" });
@@ -59,119 +59,123 @@ const TableComponent = ({
       <Text fontSize="2xl" fontWeight="bold" color="red.600" mb={4}>
         Table for Actions
       </Text>
-      <TableContainer
-        borderRadius="lg"
-        overflow="hidden"
-        boxShadow="md"
-        bg="white"
-        border="1px solid"
-        borderColor="red.200"
-      >
-        <Table variant="striped" colorScheme="red" size={tableSize}>
-          <Thead bg="red.500" color="white">
-            <Tr>
-              {columns.map((col, index) => (
-                <Th
-                  key={index}
-                  textTransform="capitalize"
-                  p={4}
-                  fontSize="md"
-                  onClick={() => handleSort(col)}
-                  cursor="pointer"
-                  _hover={{ bg: "red.600", opacity: 0.8 }}
-                >
-                  {col.charAt(0).toUpperCase() + col.slice(1)}
-                  {sortConfig.key === col && (
-                    <Button
-                      icon={
-                        sortConfig.direction === "asc" ? (
-                          <FaArrowUp />
-                        ) : (
-                          <FaArrowDown />
-                        )
-                      }
-                      size="sm"
-                      variant="link"
-                      ml={2}
-                      aria-label="Sort"
-                    />
-                  )}
-                </Th>
-              ))}
-              {/* Conditionally render Actions column header */}
-              {showActions && (
-                <Th p={4} fontSize="md" textAlign="center">
-                  Actions
-                </Th>
-              )}
-            </Tr>
-          </Thead>
-          <Tbody>
-            {sortedData.map((row) => (
-              <Tr
-                key={row.id}
-                _hover={{
-                  bg: "red.50",
-                  transform: "scale(1.02)",
-                  transition: "all 0.2s",
-                }}
-              >
-                {columns.map((col, colIndex) => (
-                  <Td
-                    key={colIndex}
-                    p={4}
-                    fontSize="sm"
-                    color="gray.700"
-                    _hover={{ color: "red.500", cursor: "pointer" }}
+      {data.length > 0 ? (
+        <TableContainer
+          borderRadius="lg"
+          overflow="hidden"
+          boxShadow="md"
+          bg="white"
+          border="1px solid"
+          borderColor="red.200"
+        >
+          <Table variant="striped" colorScheme="red" size={tableSize}>
+            <Thead bg="red.500" color="white">
+              <Tr>
+                {columns.map((col, index) => (
+                  <Th
+                    key={index}
+                    textTransform="capitalize"
+                    p={3}
+                    fontSize="md"
+                    onClick={() => handleSort(col)}
+                    cursor="pointer"
+                    _hover={{ bg: "red.600", opacity: 0.8 }}
                   >
-                    {row[col]}
-                  </Td>
+                    {col.charAt(0).toUpperCase() + col.slice(1)}
+                    {sortConfig.key === col && (
+                      <Button
+                        icon={
+                          sortConfig.direction === "asc" ? (
+                            <FaArrowUp />
+                          ) : (
+                            <FaArrowDown />
+                          )
+                        }
+                        size="sm"
+                        variant="link"
+                        ml={2}
+                        aria-label="Sort"
+                      />
+                    )}
+                  </Th>
                 ))}
-                {/* Conditionally render Actions column content */}
                 {showActions && (
-                  <Td p={4} textAlign="center">
-                    {config.showView && (
-                      <Button
-                        leftIcon={<FaEye />}
-                        size="sm"
-                        colorScheme="teal"
-                        variant="outline"
-                        onClick={() => handleView(row._id)}
-                      >
-                        View
-                      </Button>
-                    )}
-                    {config.showEdit && (
-                      <Button
-                        leftIcon={<FaEdit />}
-                        size="sm"
-                        colorScheme="orange"
-                        variant="outline"
-                        ml={2}
-                        onClick={() => handleEdit(row._id)}
-                      >
-                        Edit
-                      </Button>
-                    )}
-                    {config.showDelete && (
-                      <Button
-                        leftIcon={<FaTrash />}
-                        size="sm"
-                        colorScheme="red"
-                        variant="outline"
-                        ml={2}
-                        onClick={() => handleDelete(row._id)}
-                      >
-                        Delete
-                      </Button>
-                    )}
-                  </Td>
+                  <Th p={4} fontSize="md" textAlign="center">
+                    Actions
+                  </Th>
                 )}
               </Tr>
-            ))}
-          </Tbody>
-        </Table>
-      </TableContainer>
+            </Thead>
+            <Tbody>
+              {sortedData.map((row) => (
+                <Tr
+                  key={row.id}
+                  _hover={{
+                    bg: "red.50",
+                    transform: "scale(1.02)",
+                    transition: "all 0.2s",
+                  }}
+                >
+                  {columns.map((col, colIndex) => (
+                    <Td
+                      key={colIndex}
+                      p={4}
+                      fontSize="sm"
+                      color="gray.700"
+                      _hover={{ color: "red.500", cursor: "pointer" }}
+                    >
+                      {row[col]}
+                    </Td>
+                  ))}
+                  {showActions && (
+                    <Td p={4} textAlign="center">
+                      {config.showView && (
+                        <Button
+                          leftIcon={<FaEye />}
+                          size="sm"
+                          colorScheme="teal"
+                          variant="outline"
+                          onClick={() => handleView(row._id)}
+                        >
+                          View
+                        </Button>
+                      )}
+                      {config.showEdit && (
+                        <Button
+                          leftIcon={<FaEdit />}
+                          size="sm"
+                          colorScheme="orange"
+                          variant="outline"
+                          ml={2}
+                          onClick={() => handleEdit(row._id)}
+                        >
+                          Edit
+                        </Button>
+                      )}
+                      {config.showDelete && (
+                        <Button
+                          leftIcon={<FaTrash />}
+                          size="sm"
+                          colorScheme="red"
+                          variant="outline"
+                          ml={2}
+                          onClick={() => handleDelete(row._id)}
+                        >
+                          Delete
+                        </Button>
+                      )}
+                    </Td>
+                  )}
+                </Tr>
+              ))}
+            </Tbody>
+          </Table>
+        </TableContainer>
+      ) : (
+        <Box textAlign="center" p={6} color="gray.500" fontSize="lg">
+          No data to show
+        </Box>
+      )}
     </Box>
   );
 };

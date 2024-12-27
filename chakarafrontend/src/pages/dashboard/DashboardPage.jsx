@@ -40,7 +40,11 @@ import { useNavigate, Outlet, Link } from "react-router-dom";
 import Table from "../../component/TableComponent";
 import { allUserService } from "../../services/userServices";
 import { useEffect } from "react";
-import { categoriesService } from "../../services/productService";
+import {
+  categoriesService,
+  getProductService,
+  subCategoriesService,
+} from "../../services/productService";
 
 const LinkItems = [
   { name: "Home", icon: FiHome, to: "/dashboard/home" },
@@ -213,6 +217,7 @@ const MobileNav = ({ onOpen, currentUser, handelLogout, ...rest }) => {
 const DashboardPage = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const currentUser = useSelector((store) => store.user.currentuser);
+
   const handelLogout = () => {
     store.dispatch(setReset());
   };
@@ -222,10 +227,18 @@ const DashboardPage = () => {
   const fetchCategories = async () => {
     const response = await categoriesService();
   };
+  const fetchSubCategories = async () => {
+    const response = await subCategoriesService();
+  };
+  const fetchProduct = async () => {
+    const response = await getProductService();
+  };
 
   useEffect(() => {
     fetchAllUser();
     fetchCategories();
+    fetchSubCategories();
+    fetchProduct();
   }, []);
 
   return (
